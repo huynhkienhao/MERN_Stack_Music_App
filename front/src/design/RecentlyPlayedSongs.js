@@ -74,6 +74,7 @@ const RecentlyPlayedSongs = ({ setCurrentSong, audioRef, isPlaying }) => {
                 }
                 alt={song.songName || "Unknown Song"}
               />
+
               <SongInfo>
                 <SongName>{song.songName || "Unknown Song"}</SongName>
                 <Artist>{song.artist || "Unknown Artist"}</Artist>

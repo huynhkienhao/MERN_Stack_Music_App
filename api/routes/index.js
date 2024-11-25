@@ -1,6 +1,9 @@
-const express = require("express");
+import express from "express";
+import playlistRouter from "./PlaylistRoutes.js";
+
 const router = express.Router();
 
-router.use("/playlists", require("./playlist"));
+// Kết hợp các route
+router.use("/playlists", playlistRouter);
 
-module.exports = router;
+export default router;

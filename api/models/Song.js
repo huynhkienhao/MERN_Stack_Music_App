@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 // Define the schema for the songs table
 const songSchema = new mongoose.Schema({
@@ -16,4 +16,4 @@ const songSchema = new mongoose.Schema({
 // Create the model for the songs table
 const Song = mongoose.model("Song", songSchema);
 
-module.exports = Song;
+export default Song;

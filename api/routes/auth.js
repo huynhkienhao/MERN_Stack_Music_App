@@ -1,13 +1,23 @@
-const express = require("express");
+import express from "express";
+import {
+    register,
+    login,
+    logOut,
+    getAdminProfile,
+    getAllUsers,
+    setAvatar,
+} from "../controllers/AdminController.js";
+
 const router = express.Router();
-const adminController = require("../controllers/AdminController");
 
-router.post("/register", adminController.register);
-router.post("/login", adminController.login);
-router.post("/logout", adminController.logOut);
-// router.get('/getAdminProfile', adminController.getAdminProfile);
+// Định nghĩa các route liên quan đến admin
+router.post("/register", register);
+router.post("/login", login);
+router.post("/logout", logOut);
+router.get("/getAdminProfile", getAdminProfile);
 
-// router.get('/users', adminController.getAllUsers);
-// router.put('/users/:id/avatar', adminController.setAvatar);
+router.get("/users", getAllUsers);
+router.put("/users/:id/avatar", setAvatar);
 
-module.exports = router;
+
+export default router;

@@ -1,29 +1,11 @@
-const Song = require("../models/Song");
-const multer = require("multer");
-const upload = require("../Middleware/uploadMiddleware"); // Import the Multer middleware
-const fs = require("fs");
-// Controller function to fetch all songs
-exports.getSongs = async (req, res) => {
-  try {
-    const songs = await Song.find();
-    res.json(songs);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-exports.getSongDetails = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const song = await Song.findById(id); // Use findById to fetch a song by ID
-    if (!song) {
-      return res.status(404).json({ error: "Song not found" });
-    }
-    res.json(song);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-//getSongDetails
+import Song from "../models/Song.js";
+import AdminUser from "../models/AdminUser.js";
+import Rating from "../models/Rating.js";
+import Comment from "../models/Comment.js";
+import mongoose from "mongoose";
+import multer from "multer";
+import fs from "fs";
+
 // Multer configuration for handling file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -34,34 +16,51 @@ const storage = multer.diskStorage({
   },
 });
 
-// Initialize multer with the configured storage
 const uploadStorage = multer({ storage: storage });
 
-// // Controller function to create a new song
-exports.createSongs = async (req, res) => {
+// Fetch all songs
+export const getSongs = async (req, res) => {
   try {
-    // Handle potential errors during upload
+    const songs = await Song.find();
+    res.json(songs);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Fetch song details
+export const getSongDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const song = await Song.findById(id);
+    if (!song) {
+      return res.status(404).json({ error: "Song not found" });
+    }
+    res.status(200).json(song);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Create a new song
+export const createSongs = async (req, res) => {
+  try {
     uploadStorage.fields([
       { name: "song", maxCount: 1 },
       { name: "imgSrc", maxCount: 1 },
     ])(req, res, async (err) => {
       if (err) {
-        return res.status(400).json({ error: err.message }); // Use err.message for more details
+        return res.status(400).json({ error: err.message });
       }
 
-      // Extract fields from request body
       const { favourite, category, type, songName, artist, color } = req.body;
-
-      // Check if uploaded files exist
       if (!req.files) {
         return res.status(400).json({ error: "No files uploaded" });
       }
 
-      // Extract file paths (assuming successful upload)
-      const songFilePath = req.files["song"][0].path; // File path of the uploaded song
-      const imgFilePath = req.files["imgSrc"][0].path; // File path of the uploaded image
+      const songFilePath = req.files["song"][0].path;
+      const imgFilePath = req.files["imgSrc"][0].path;
 
-      // Create new song object
       const song = new Song({
         favourite,
         category,
@@ -73,61 +72,61 @@ exports.createSongs = async (req, res) => {
         color,
       });
 
-      // Save song to database
       const savedSong = await song.save();
-
       res.status(201).json(savedSong);
     });
   } catch (error) {
-    // Handle other errors
     res.status(500).json({ error: error.message });
   }
 };
-// Controller function to create a new song
 
-exports.updateSongDetails = async (req, res) => {
+// Add or update a rating
+export const addOrUpdateRating = async (req, res) => {
   try {
-    // Handle potential errors during upload
-    uploadStorage.fields([
-      { name: "song", maxCount: 1 },
-      { name: "imgSrc", maxCount: 1 },
-    ])(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message }); // Use err.message for more details
-      }
+    const { userId, score } = req.body;
+    const songId = req.params.songId;
 
-      // Extract fields from request body
-      const { favourite, category, type, songName, artist, color } = req.body;
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const songObjectId = new mongoose.Types.ObjectId(songId);
 
-      // Check if uploaded files exist
-      if (!req.files) {
-        return res.status(400).json({ error: "No files uploaded" });
-      }
-
-      // Extract file paths (assuming successful upload)
-      const songFilePath = req.files["song"][0].path; // File path of the uploaded song
-      const imgFilePath = req.files["imgSrc"][0].path; // File path of the uploaded image
-
-      // Find the song by ID and update its details
-      const updatedSong = await Song.findByIdAndUpdate(
-        req.params.id,
-        {
-          favourite,
-          category,
-          type,
-          songName,
-          artist,
-          song: songFilePath,
-          imgSrc: imgFilePath,
-          color,
-        },
-        { new: true }
-      ); // { new: true } returns the updated document
-
-      res.status(200).json({ updatedSong });
+    const existingRating = await Rating.findOne({
+      user: userObjectId,
+      song: songObjectId,
     });
+
+    if (existingRating) {
+      existingRating.score = score;
+      await existingRating.save();
+    } else {
+      const newRating = new Rating({
+        user: userObjectId,
+        song: songObjectId,
+        score,
+      });
+      await newRating.save();
+    }
+
+    res.status(201).json({ message: "Rating updated successfully" });
   } catch (error) {
-    // Handle other errors
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Add a comment
+export const addComment = async (req, res) => {
+  try {
+    const { userId, content } = req.body;
+    const songId = req.params.songId;
+
+    const newComment = new Comment({
+      user: userId,
+      song: songId,
+      content,
+    });
+
+    const savedComment = await newComment.save();
+    res.status(201).json({ comment: savedComment });
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };

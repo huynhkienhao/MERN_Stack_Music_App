@@ -1,18 +1,12 @@
-// const express = require("express");
-// const router = express.Router();
-// const userController = require("../controllers/userController");
+import express from "express";
+import userController from "../controllers/userController.js";
 
-// // Route đăng ký
-// router.post("/register", userController.register);
+const router = express.Router();
 
-// // Route đăng nhập
-// router.post("/login", userController.login);
+// Các route liên quan đến người dùng
+router.post("/register", userController.register);
+router.post("/login", userController.login);
+router.put("/profile/:id", userController.updateProfile);
+router.get("/profile/:id", userController.getUserProfile);
 
-// // Route cập nhật thông tin người dùng
-// router.put("/profile/:id", userController.updateProfile);
-
-// // Route lấy thông tin người dùng
-// router.get("/profile/:id", userController.getUserProfile);
-
-// module.exports = router;
-// a;
+export default router;

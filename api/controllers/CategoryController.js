@@ -1,7 +1,7 @@
-const Category = require('../models/Category');
+import Category from "../models/Category.js";
 
 // Controller function to fetch all categories
-exports.getCategories = async (req, res) => {
+export const getCategories = async (req, res) => {
   try {
     const categories = await Category.find();
     res.json(categories);
@@ -11,7 +11,7 @@ exports.getCategories = async (req, res) => {
 };
 
 // Controller function to create a new category
-exports.createCategory = async (req, res) => {
+export const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
     const category = new Category({ name });

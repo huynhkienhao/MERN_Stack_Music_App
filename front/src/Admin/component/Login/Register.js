@@ -84,6 +84,7 @@ export default function Register() {
     password: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
@@ -98,13 +99,16 @@ export default function Register() {
   const handleValidation = () => {
     const { password, confirmPassword, username, email } = values;
     if (password !== confirmPassword) {
-      console.error("Password and confirm password should be the same.");
+      setError("Password and confirm password should be the same.");
       return false;
     } else if (username.length < 3) {
-      console.error("Username should be at least 3 characters long.");
+      setError("Username should be at least 3 characters long.");
       return false;
     } else if (password.length < 8) {
-      console.error("Password should be at least 8 characters long.");
+      setError("Password should be at least 8 characters long.");
+      return false;
+    } else if (!email.includes("@")) {
+      setError("Please enter a valid email.");
       return false;
     }
     return true;
@@ -122,7 +126,8 @@ export default function Register() {
         });
 
         if (response.data.status === false) {
-          console.error(response.data.msg);
+          setError(response.data.msg);
+          return;
         }
 
         if (response.data.status === true) {
@@ -133,7 +138,8 @@ export default function Register() {
           history.push("/admin");
         }
       } catch (error) {
-        console.error("An error occurred while registering:", error);
+        setError("An error occurred while registering. Please try again.");
+        console.error("Error:", error);
       }
     }
   };
@@ -142,8 +148,9 @@ export default function Register() {
     <FormContainer>
       <form onSubmit={handleSubmit}>
         <div className="brand">
-          <h1>snappy</h1>
+          <h1>Snappy</h1>
         </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <input
           type="text"
           placeholder="Username"

@@ -1,11 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
-// Define the schema for the categories table
 const FavoritesSchema = new mongoose.Schema({
-    song_id: { type: String, required: true, unique: true }, // Example validation: required and unique
+  user_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "AdminUser" },
+  song_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Song" },
 });
 
-// Create the model for the categories table
-const Favorites = mongoose.model('Favorites', FavoritesSchema);
-
-module.exports = Favorites;
+export default mongoose.model("Favorites", FavoritesSchema);

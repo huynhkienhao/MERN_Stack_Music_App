@@ -1,10 +1,8 @@
-const express = require("express");
-const router = express.Router();
-const jwt = require("jsonwebtoken");
-const User = require("../models/AdminUser");
-const bcrypt = require("bcrypt");
-const multer = require("multer");
-const verify = require("./verifyToken");
+import jwt from "jsonwebtoken";
+import User from "../models/AdminUser.js";
+import bcrypt from "bcrypt";
+import multer from "multer";
+
 const upload = multer();
 
 const generateToken = (user) => {
@@ -15,33 +13,49 @@ const generateToken = (user) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
-module.exports.login = async (req, res, next) => {
+// Đăng nhập
+export const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
-    // Find user by username
-    const user = await User.findOne({ username });
-    if (!user)
+    const user = await User.findOne({ username }).populate({
+      path: "listeningHistory.song",
+      select: "songName artist",
+    });
+
+    if (!user) {
       return res
         .status(401)
         .json({ msg: "Incorrect Username or Password", status: false });
+    }
 
-    // Compare passwords
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid)
+    if (!isPasswordValid) {
       return res
         .status(401)
         .json({ msg: "Incorrect Username or Password", status: false });
+    }
 
-    // If username and password are correct, generate token and send response
     const token = generateToken(user);
-    res.json({ status: true, user, token });
+    const userData = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      listenedSongs: user.listenedSongs,
+      favoriteSongs: user.favoriteSongs,
+      listeningHistory: user.listeningHistory,
+      genreCounts: user.genreCounts,
+    };
+
+    res.json({ status: true, user: userData, token });
   } catch (error) {
-    next(error); // Pass the error to the error handling middleware
+    next(error);
   }
 };
 
-module.exports.register = async (req, res) => {
+// Đăng ký
+export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
@@ -66,7 +80,8 @@ module.exports.register = async (req, res) => {
   }
 };
 
-module.exports.logOut = (req, res, next) => {
+// Đăng xuất
+export const logOut = (req, res, next) => {
   try {
     res.clearCookie("token").json("Logged out");
   } catch (ex) {
@@ -74,56 +89,58 @@ module.exports.logOut = (req, res, next) => {
   }
 };
 
-// module.exports.getAdminProfile = async (req, res, next) => {
+// Lấy thông tin Admin
+export const getAdminProfile = async (req, res, next) => {
+  try {
+    const adminProfile = await User.findOne();
 
-//   try {
-//     const adminProfile = await User.findOne(); // You need to implement this function
+    if (adminProfile) {
+      res.json({
+        AdminProfile: adminProfile,
+        successMsg: "Admin profile retrieved successfully",
+      });
+    } else {
+      res.status(500).json({ errorMsg: "Failed to retrieve admin profile" });
+    }
+  } catch (error) {
+    console.error("Error retrieving admin profile:", error);
+    res.status(500).json({ errorMsg: "Error retrieving admin profile" });
+  }
+};
 
-//     // Check if admin profile data is retrieved successfully
-//     if (adminProfile) {
-//       // Send the admin profile data as JSON response
-//       res.json({ AdminProfile: adminProfile, successMsg: 'Admin profile retrieved successfully' });
-//     } else {
-//       // If admin profile data retrieval fails, send an error response
-//       res.status(500).json({ errorMsg: 'Failed to retrieve admin profile' });
-//     }
-//   } catch (error) {
-//     console.error('Error retrieving admin profile:', error);
-//     res.status(500).json({ errorMsg: 'Error retrieving admin profile' }); // Return an error response
-//   }
-// };
+// Lấy danh sách người dùng
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.params.id } }).select([
+      "email",
+      "username",
+      "avatarImage",
+      "_id",
+    ]);
+    return res.json(users);
+  } catch (ex) {
+    next(ex);
+  }
+};
 
-// module.exports.getAllUsers = async (req, res, next) => {
-//   try {
-//     const users = await User.find({ _id: { $ne: req.params.id } }).select([
-//       "email",
-//       "username",
-//       "avatarImage",
-//       "_id",
-//     ]);
-//     return res.json(users);
-//   } catch (ex) {
-//     next(ex);
-//   }
-// };
-
-// module.exports.setAvatar = async (req, res, next) => {
-//   try {
-//     const userId = req.params.id;
-//     const avatarImage = req.body.image;
-//     const userData = await User.findByIdAndUpdate(
-//       userId,
-//       {
-//         isAvatarImageSet: true,
-//         avatarImage,
-//       },
-//       { new: true }
-//     );
-//     return res.json({
-//       isSet: userData.isAvatarImageSet,
-//       image: userData.avatarImage,
-//     });
-//   } catch (ex) {
-//     next(ex);
-//   }
-// };
+// Đặt avatar cho người dùng
+export const setAvatar = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const avatarImage = req.body.image;
+    const userData = await User.findByIdAndUpdate(
+      userId,
+      {
+        isAvatarImageSet: true,
+        avatarImage,
+      },
+      { new: true }
+    );
+    return res.json({
+      isSet: userData.isAvatarImageSet,
+      image: userData.avatarImage,
+    });
+  } catch (ex) {
+    next(ex);
+  }
+};

@@ -1,35 +1,41 @@
-// Import necessary modules
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const User = require("./models/AdminUser");
-const Favorites = require("./models/Favorites");
-const Song = require("./models/Song");
-const Category = require("./models/Category");
-const cookieParser = require("cookie-parser");
-const adminRouter = require("./routes/auth");
-const categoryRouter = require("./routes/category");
-const songRouter = require("./routes/song");
-const favoriteRouter = require("./routes/favorite");
-const multer = require("multer");
-// const songRouter = require("./routes/song");
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
-// Load environment variables
-require("dotenv").config();
+// Định nghĩa __dirname cho ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Initialize Express app
+// Import các module do bạn tự viết
+import User from "./models/AdminUser.js";
+import Favorites from "./models/Favorites.js";
+import Song from "./models/Song.js";
+import Category from "./models/Category.js";
+import adminRouter from "./routes/auth.js";
+import categoryRouter from "./routes/category.js";
+import songRouter from "./routes/song.js";
+import favoriteRouter from "./routes/favorite.js";
+import playListRouter from "./routes/PlaylistRoutes.js";
+
+// Nạp biến môi trường
+dotenv.config();
+
+// Khởi tạo ứng dụng Express
 const app = express();
 
-// Middleware
+// Cấu hình middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors()); // Allow all origins for testing. Adjust in production.
-app.use("/uploads", express.static(__dirname + "/uploads")); // Serve static files
+app.use(cors());
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
-module.exports = app;
-// Connect to MongoDB
+// Kết nối MongoDB
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -38,26 +44,20 @@ mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB");
 });
 
-// Function to generate JWT token
-
+// Định nghĩa route API
 app.get("/api/getAdminProfile", async (req, res) => {
   try {
-    const adminProfile = await User.findOne(); // You need to implement this function
-
-    // Check if admin profile data is retrieved successfully
+    const adminProfile = await User.findOne();
     if (adminProfile) {
-      // Send the admin profile data as JSON response
       res.json({
         AdminProfile: adminProfile,
-        successMsg: "Admin profile retrieved successfully",
+        successMsg: "Retrieved successfully",
       });
     } else {
-      // If admin profile data retrieval fails, send an error response
       res.status(500).json({ errorMsg: "Failed to retrieve admin profile" });
     }
   } catch (error) {
-    console.error("Error retrieving admin profile:", error);
-    res.status(500).json({ errorMsg: "Error retrieving admin profile" }); // Return an error response
+    res.status(500).json({ errorMsg: "Error retrieving admin profile" });
   }
 });
 
@@ -82,25 +82,22 @@ const suggestedSongs = [
   },
 ];
 
-// Tạo API cho gợi ý bài hát
+// Tạo API cho danh sách gợi ý
 app.get("/api/suggested-songs", (req, res) => {
-  res.json(suggestedSongs); // Trả về dữ liệu gợi ý nhạc
+  res.json(suggestedSongs);
 });
 
-// // Khởi động server
-// app.listen(port, () => {
-//   console.log(`Server is running on http://localhost:${port}`);
-// });
-
-// Routes for songs and categories
+// Thêm các router
 app.use("/api", adminRouter);
 app.use("/api", songRouter);
 app.use("/api", categoryRouter);
 app.use("/api", favoriteRouter);
-// // Sử dụng route songRouter cho các đường dẫn bắt đầu bằng '/api'
-// app.use("/api", songRouter);
-// Start server
+app.use("/api", playListRouter);
+
+// Khởi động server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+export default app;
