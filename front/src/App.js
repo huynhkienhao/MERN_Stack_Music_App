@@ -16,6 +16,7 @@ import PlaylistDetail from "./Components/PlaylistDetail";
 import AddToPlaylist from "./Components/AddToPlaylist";
 import SongList from "./Components/SongList";
 import FavoritesList from "./Components/FavoritesList";
+import Login from "./Admin/component/Login/Login";
 function App() {
   return (
     <Provider store={store}>
@@ -33,6 +34,8 @@ function App() {
             {/* Định tuyến khác */}
             <Route path="/artist" component={Artist} />
             <Route path="/playlists" component={PlaylistPage} />
+
+            <Route path="/login" component={Login} />
 
             <Route path="/add-to-playlist/:songId" component={AddToPlaylist} />
             <Route path="/playlist/:id/add-songs" component={SongList} />

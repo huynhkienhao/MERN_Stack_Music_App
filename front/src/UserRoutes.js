@@ -9,14 +9,12 @@ import AudioPlayer from "./Components/Albums";
 import Liked from "./Components/Liked";
 import { Songs } from "./Components/Songs";
 import Library from "./design/Library";
-// import { PlayList } from "./Components/PlayList";
 import Playlists from "./Components/PlaylistPage";
-import Login from "./Admin/component/Login/Login"; // Import LoginForm
+import Login from "./Admin/component/Login/Login";
 import { getAdminProfile } from "./Admin/actions/AuthAdminAction";
 import { connect } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./Admin/component/theme";
-// import { PlayList } from "./Components/PlayList";
 
 export const handleLogin = (setLoggedIn) => {
   setLoggedIn(true);

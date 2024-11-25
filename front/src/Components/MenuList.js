@@ -7,39 +7,39 @@ const MenuList = [
   {
     id: 1,
     icon: <BsFillHouseFill />,
-    name: "Home",
+    name: "Trang chủ",
     path: "/",
   },
 
   {
     id: 2,
     icon: <BiSearchAlt />,
-    name: "Search",
+    name: "Tìm kiếm",
     path: "/search",
   },
   {
     id: 3,
     icon: <FaMicrophoneAlt />,
-    name: "Artist",
+    name: "Nghệ sĩ",
     path: "/artist",
   },
   {
     id: 4,
     icon: <BsJournalAlbum />,
-    name: "Albums",
+    name: "Album",
     path: "/albums",
   },
   {
     id: 5,
     icon: <BsJournalAlbum />,
-    name: "Library",
+    name: "Thư viện nhạc",
     path: "/library",
   },
 
   {
     id: 6,
     icon: <BsJournalAlbum />,
-    name: "Playlist",
+    name: "Danh sách phát",
     path: "/playlists",
   },
 

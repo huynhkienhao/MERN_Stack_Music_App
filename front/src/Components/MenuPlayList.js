@@ -8,7 +8,7 @@ function MenuPlayList() {
   return (
     <div className="playListContainer">
       <div className="nameContainer">
-        <p>Playlists</p>
+        <p>Playlist</p>
         <i>
           <FaPlus />
         </i>

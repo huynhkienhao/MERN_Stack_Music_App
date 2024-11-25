@@ -1,3 +1,3 @@
 export const PlayList = [
-  { id: 1, name: "Your Library" },
+  { id: 1, name: "Thư viện của bạn" },
 ];

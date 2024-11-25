@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from 'react-icons/fa';
 import Header  from "./Header";
 
+
 function MainContainer(props) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [copydata, setCopyData] = useState([]);
@@ -61,7 +62,6 @@ function MainContainer(props) {
   return (
     <div className="mainContainer">
       <Header></Header>
-    
       <div className="menuList">
       <ul>
   <li>

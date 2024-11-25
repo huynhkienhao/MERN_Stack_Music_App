@@ -1,5 +1,6 @@
 :root {
     --primary-color: #1ed760;
+    --second-color: #1f1f1f;
     --white-color: #fff;
     --black-color: #121212;
     --text-color: #c7c7c7;
@@ -31,4 +32,9 @@ html {
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+}
+
+.hover-btn:hover {
+    opacity: 0.8;
+    transition: 0.3s;
 }

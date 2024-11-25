@@ -1,10 +1,22 @@
+/* RxCare */
+.header__middle-RxCare {
+  background-color: var(--second-color);
+  padding: 7px;
+  margin-right: 8px;
+}
+
+.header__middle-RxCare--Left {
+  
+}
+.header__middle-RxCare--Right {
+
+}
+
 .leftMenu {
-
   width: 280px;
-
-  background: rgba(34, 34, 34, 0.6);
+  background-color: #000000;
   backdrop-filter: blur(10px);
-  padding: 25px 20px;
+  padding: 25px 8px;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -14,6 +26,7 @@
   justify-content: space-between;
   align-items: center;
   color: #f1f1f1;
+  margin-left: 10px;
 }
 
 .logoContainer .logo {
@@ -71,7 +84,9 @@
 }
 
 .menuContainer {
-  margin: 15px 0;
+  margin: 27px 10px;
+  background-color: #1f1f1f;
+  border-radius: 10px;
 }
 
 .menuContainer p {
@@ -83,7 +98,7 @@
 
 .menuContainer ul {
   width: 100%;
-  padding: 0px;
+  padding: 10px 16px;
 }
 
 .menuContainer ul li {
@@ -99,7 +114,8 @@
   color: #848484;
   display: flex;
   align-items: center;
-  font-size: 16px;
+  font-size: 1.6rem;
+  font-weight: 500;
 }
 
 .menuContainer ul li a i {
@@ -131,8 +147,7 @@
 }
 
 .playListContainer {
-  margin: 15px 0px;
-  cursor: pointer;
+  margin: 15px 13px;
 }
 
 .playListContainer .nameContainer {
@@ -144,13 +159,14 @@
 }
 
 .playListContainer .nameContainer p {
-  font-size: 12px;
+  font-size: 15px;
   text-transform: uppercase;
 }
 
 .playListContainer .nameContainer i {
   cursor: pointer;
   color: #f1f1f1;
+  font-size: 1.6rem;
 }
 
 
