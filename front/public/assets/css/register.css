@@ -62,8 +62,13 @@
     border: none;
     font-size: 1.5rem;
     font-weight: 500;
-    background-color: var(--primary-color);
-    color: var(--white-color);
+    background-color: var(--primary-color) !important;
+    color: var(--white-color) !important;
+}
+
+.register__form-submit:hover {
+    opacity: 0.8;
+    transition: 0.3s;
 }
 
 /* Register Or */
@@ -136,11 +141,16 @@
 
 /* Footer reCAPTCHA */
 .footer__reCAPTCHA {
-    padding: 30px 0px;
+    padding: 30px 0px 60px 0px;
     font-size: 1.4rem;
-    width: 325px;
-    margin: auto;
+    width: 100%;
     text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.footer__reCAPTCHA-text {
+    width: 325px;
 }
 
 .footer__reCAPTCHA-link {
